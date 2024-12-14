@@ -3,62 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Portal</title>
+    <title>Patient and Doctor Portal</title>
     <style>
-        /* (same CSS as before) */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+        main {
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        input[type="text"], input[type="password"], input[type="email"], input[type="date"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+        }
+        .dashboard button {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Medical Portal</h1>
-    </div>
-    <div class="container">
-        <div id="signup-form" class="form-container">
-            <h2>Sign Up</h2>
-            <form id="signupForm">
-                <label for="signupRole">Role:</label>
-                <select name="signupRole" id="signupRole" onchange="toggleSignupHospitalIdField()">
-                    <option value="doctor">Doctor</option>
-                    <option value="patient">Patient</option>
-                </select>
-                <input type="text" id="signupUsername" placeholder="Username" required>
-                <input type="email" id="signupEmail" placeholder="Email" required>
-                <input type="password" id="signupPassword" placeholder="Password" required>
-                <input type="text" id="signupHospitalId" placeholder="Doctor ID (e.g., #987-453-26788)" style="display: none;">
-                <input type="submit" value="Sign Up">
-            </form>
+    <header>
+        <h1>Welcome to the Patient and Doctor Portal</h1>
+    </header>
+    <main>
+        <!-- Home Page -->
+        <div id="home">
+            <h2>Welcome to the Portal</h2>
+            <button onclick="showLoginForm('patient')">Patient Login</button>
+            <button onclick="showLoginForm('doctor')">Doctor Login</button>
+            <button onclick="showRegisterForm()">Register</button>
         </div>
-        <div id="login-form" class="form-container" style="display: none;">
+
+        <!-- Login Form -->
+        <div id="loginForm" class="hidden">
             <h2>Login</h2>
-            <form id="loginForm">
-                <label for="role">Role:</label>
-                <select name="role" id="role" onchange="toggleHospitalIdField()">
-                    <option value="doctor">Doctor</option>
+            <div class="form-group">
+                <label for="loginUsername">Username:</label>
+                <input type="text" id="loginUsername" placeholder="Enter Username">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" placeholder="Enter Password">
+            </div>
+            <button onclick="login()">Login</button>
+            <button onclick="goHome()">Back to Home</button>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="hidden">
+            <h2>Register</h2>
+            <div class="form-group">
+                <label for="registerUsername">Username:</label>
+                <input type="text" id="registerUsername" placeholder="Enter Username">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Password:</label>
+                <input type="password" id="registerPassword" placeholder="Enter Password">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Email:</label>
+                <input type="email" id="registerEmail" placeholder="Enter Email">
+            </div>
+            <div class="form-group">
+                <label for="registerRole">Role:</label>
+                <select id="registerRole" onchange="toggleDoctorSelection()">
                     <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
                 </select>
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <input type="text" id="hospitalId" placeholder="Doctor ID (e.g., #987-453-26788)" style="display: none;">
-                <input type="submit" value="Login">
-            </form>
-        </div>
-        <div id="dashboard" class="form-container" style="display: none;">
-            <h2>Dashboard</h2>
-            <div id="doctor-dashboard" style="display: none;">
-                <h3>Doctor's Dashboard</h3>
-                <p>Welcome, Doctor! Here you can manage patient data.</p>
-                <!-- Add more doctor-specific content here -->
             </div>
-            <div id="patient-dashboard" style="display: none;">
-                <h3>Patient's Dashboard</h3>
-                <p>Welcome, Patient! Here you can view your medical records.</p>
-                <!-- Add more patient-specific content here -->
+            <div id="doctorSelect" class="form-group hidden">
+                <label for="chooseDoctor">Choose Your Doctor:</label>
+                <select id="chooseDoctor"></select>
+            </div>
+            <button onclick="register()">Register</button>
+            <button onclick="goHome()">Back to Home</button>
+        </div>
+
+        <!-- Patient Dashboard -->
+        <div id="patientDashboard" class="hidden">
+            <h2>Patient Dashboard</h2>
+            <div class="dashboard">
+                <button onclick="viewPrescriptions()">View Prescriptions</button>
+                <button onclick="markMedicationAsTaken()">Mark Medication as Taken</button>
+                <button onclick="checkMedicationCompliance()">Check Medication Compliance</button>
+                <button onclick="bookAppointment()">Book Appointment</button>
+                <button onclick="provideFeedback()">Provide Feedback</button>
+                <button onclick="logout()">Logout</button>
             </div>
         </div>
-    </div>
-    <div class="footer">
-        <p>&copy; 2024 Medical Portal</p>
-    </div>
-    <script src="app.js"></script>
+
+        <!-- Doctor Dashboard -->
+        <div id="doctorDashboard" class="hidden">
+            <h2>Doctor Dashboard</h2>
+            <div class="dashboard">
+                <button onclick="viewAppointments()">View Appointments</button>
+                <button onclick="assignMedication()">Assign Medication</button>
+                <button onclick="viewPatientFeedback()">View Patient Feedback</button>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Assign Medication -->
+        <div id="assignMedicationForm" class="hidden">
+            <h3>Assign Medication</h3>
+            <div class="form-group">
+                <label for="patientUsername">Patient Username:</label>
+                <input type="text" id="patientUsername" placeholder="Enter Patient Username">
+            </div>
+            <div class="form-group">
+                <label for="medicineName">Medicine Name:</label>
+                <input type="text" id="medicineName" placeholder="Enter Medicine Name">
+            </div>
+            <div class="form-group">
+                <label for="dosage">Dosage:</label>
+                <input type="text" id="dosage" placeholder="Enter Dosage">
+            </div>
+            <div class="form-group">
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" placeholder="Enter Instructions"></textarea>
+            </div>
+            <button onclick="submitMedicationAssignment()">Submit</button>
+            <button onclick="goBackToDoctorDashboard()">Back to Dashboard</button>
+        </div>
+
+        <!-- Patient Feedback View -->
+        <div id="patientFeedback" class="hidden">
+            <h3>Patient Feedback</h3>
+            <ul id="feedbackList"></ul>
+            <button onclick="goBackToDoctorDashboard()">Back to Dashboard</button>
+        </div>
+    </main>
+
+    <script>
+        const users = {}; // Store users { username: {password, email, prescriptions, compliance, role, doctorAssigned} }
+        const doctors = {}; // Store doctor users
+        let currentUser = null;
+
+        function goHome() {
+            hideAll();
+            document.getElementById("home").classList.remove("hidden");
+        }
+
+        function showLoginForm(role) {
+            hideAll();
+            document.getElementById("loginForm").classList.remove("hidden");
+            currentUser = { role: role };
+        }
+
+        function showRegisterForm() {
+            hideAll();
+            document.getElementById("registerForm").classList.remove("hidden");
+            document.getElementById("doctorSelect").classList.add("hidden"); // Hide doctor selection by default
+        }
+
+        function toggleDoctorSelection() {
+            const role = document.getElementById("registerRole").value;
+            if (role === "patient" && Object.keys(doctors).length > 0) {
+                document.getElementById("doctorSelect").classList.remove("hidden");
+                populateDoctorDropdown();
+            } else {
+                document.getElementById("doctorSelect").classList.add("hidden");
+            }
+        }
+
+        function populateDoctorDropdown() {
+            const doctorSelect = document.getElementById("chooseDoctor");
+            doctorSelect.innerHTML = ""; // Clear existing options
+            for (let doctor in doctors) {
+                const option = document.createElement("option");
+                option.value = doctor;
+                option.textContent = doctor;
+                doctorSelect.appendChild(option);
+            }
+        }
+
+        function hideAll() {
+            document.getElementById("home").classList.add("hidden");
+            document.getElementById("loginForm").classList.add("hidden");
+            document.getElementById("registerForm").classList.add("hidden");
+            document.getElementById("patientDashboard").classList.add("hidden");
+            document.getElementById("doctorDashboard").classList.add("hidden");
+            document.getElementById("assignMedicationForm").classList.add("hidden");
+            document.getElementById("patientFeedback").classList.add("hidden");
+        }
+
+        function register() {
+            const username = document.getElementById("registerUsername").value;
+            const password = document.getElementById("registerPassword").value;
+            const email = document.getElementById("registerEmail").value;
+            const role = document.getElementById("registerRole").value;
+
+            if (users[username]) {
+                alert("This username is already taken. Please try another.");
+                return;
+            }
+
+            if (role === "doctor") {
+                users[username] = {
+                    password: password,
+                    email: email,
+                    prescriptions: [],
+                    compliance: false,
+                    role: role
+                };
+                doctors[username] = users[username]; // Add to doctors list
+            } else {
+                const doctorUsername = document.getElementById("chooseDoctor").value;
+                if (!doctors[doctorUsername]) {
+                    alert("Please select a valid doctor.");
+                    return;
+                }
+
+                users[username] = {
+                    password: password,
+                    email: email,
+                    prescriptions: [],
+                    compliance: false,
+                    role: role,
+                    doctorAssigned: doctorUsername
+                };
+            }
+
+            alert("Registration successful!");
+            goHome();
+        }
+
+        function login() {
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+
+            if (!users[username] || users[username].password !== password) {
+                alert("Invalid username or password.");
+                return;
+            }
+
+            currentUser = users[username];
+            alert("Login successful!");
+
+            if (currentUser.role === "patient") {
+                showPatientDashboard();
+            } else if (currentUser.role === "doctor") {
+                showDoctorDashboard();
+            }
+        }
+
+        function showPatientDashboard() {
+            hideAll();
+            document.getElementById("patientDashboard").classList.remove("hidden");
+        }
+
+        function showDoctorDashboard() {
+            hideAll();
+            document.getElementById("doctorDashboard").classList.remove("hidden");
+        }
+
+        function logout() {
+            currentUser = null;
+            goHome();
+        }
+
+        function viewPrescriptions() {
+            if (!currentUser.prescriptions || currentUser.prescriptions.length === 0) {
+                alert("No prescriptions found.");
+                return;
+            }
+
+            let prescriptionsList = currentUser.prescriptions.map((prescription, index) => {
+                return `Prescription ${index + 1}:\nMedicine: ${prescription.medicine}\nDosage: ${prescription.dosage}\nInstructions: ${prescription.instructions}\n`;
+            }).join("\n");
+
+            alert("Viewing prescriptions:\n" + prescriptionsList);
+        }
+
+        function markMedicationAsTaken() {
+            alert("Medication marked as taken!");
+        }
+
+        function checkMedicationCompliance() {
+            alert("Medication compliance checked!");
+        }
+
+        function bookAppointment() {
+            alert("Appointment booked!");
+        }
+
+        function provideFeedback() {
+            const feedback = prompt("Enter your feedback:");
+            if (feedback) {
+                alert("Thank you for your feedback!");
+            }
+        }
+
+        function viewAppointments() {
+            alert("Viewing appointments...");
+        }
+
+        function assignMedication() {
+            hideAll();
+            document.getElementById("assignMedicationForm").classList.remove("hidden");
+        }
+
+        function submitMedicationAssignment() {
+            const patientUsername = document.getElementById("patientUsername").value;
+            const medicineName = document.getElementById("medicineName").value;
+            const dosage = document.getElementById("dosage").value;
+            const instructions = document.getElementById("instructions").value;
+
+            if (!users[patientUsername] || users[patientUsername].role !== "patient") {
+                alert("Invalid patient username.");
+                return;
+            }
+
+            users[patientUsername].prescriptions.push({
+                medicine: medicineName,
+                dosage: dosage,
+                instructions: instructions
+            });
+
+            alert("Medication assigned successfully!");
+            showDoctorDashboard();
+        }
+
+        function viewPatientFeedback() {
+            hideAll();
+            const feedbackList = document.getElementById("feedbackList");
+            feedbackList.innerHTML = "<li>Sample Feedback</li>";
+        }
+    </script>
 </body>
 </html>
