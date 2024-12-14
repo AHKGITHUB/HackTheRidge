@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Portal</title>
+    <style>
+        /* (same CSS as before) */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Medical Portal</h1>
+    </div>
+    <div class="container">
+        <div id="signup-form" class="form-container">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <label for="signupRole">Role:</label>
+                <select name="signupRole" id="signupRole" onchange="toggleSignupHospitalIdField()">
+                    <option value="doctor">Doctor</option>
+                    <option value="patient">Patient</option>
+                </select>
+                <input type="text" id="signupUsername" placeholder="Username" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <input type="text" id="signupHospitalId" placeholder="Doctor ID (e.g., #987-453-26788)" style="display: none;">
+                <input type="submit" value="Sign Up">
+            </form>
+        </div>
+        <div id="login-form" class="form-container" style="display: none;">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="role">Role:</label>
+                <select name="role" id="role" onchange="toggleHospitalIdField()">
+                    <option value="doctor">Doctor</option>
+                    <option value="patient">Patient</option>
+                </select>
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="text" id="hospitalId" placeholder="Doctor ID (e.g., #987-453-26788)" style="display: none;">
+                <input type="submit" value="Login">
+            </form>
+        </div>
+        <div id="dashboard" class="form-container" style="display: none;">
+            <h2>Dashboard</h2>
+            <div id="doctor-dashboard" style="display: none;">
+                <h3>Doctor's Dashboard</h3>
+                <p>Welcome, Doctor! Here you can manage patient data.</p>
+                <!-- Add more doctor-specific content here -->
+            </div>
+            <div id="patient-dashboard" style="display: none;">
+                <h3>Patient's Dashboard</h3>
+                <p>Welcome, Patient! Here you can view your medical records.</p>
+                <!-- Add more patient-specific content here -->
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Medical Portal</p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
